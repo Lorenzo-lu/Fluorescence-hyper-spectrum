@@ -72,14 +72,14 @@ class Compressed_sensing_PMT:
         index_sum = np.vstack((res_index, res_index[0,:] + res_index[1,:]));
         
         
-        sorted_index = index_sum[:,index_sum[2].argsort()];        
+        sorted_index = index_sum[:,index_sum[2].argsort()];
+        ## sort the list by the sum of x and y index :: quicker than for loop?       
         
         #np.random.shuffle(res_index.T);
         selection = sorted_index[0:2,0:n_res];   
         
         freq_pattern[tuple(selection)] = 1;
-        #print(selection);
-        #print(r1,c1)           
+                  
         
         self.img_DCT_domain = np.zeros((r,c));
         ## This is for generating the measurement matrix of 0 & 1 by doing idct2
@@ -244,9 +244,11 @@ class Compressed_sensing_PMT:
             
         #self.img_reconstructed[np.where(self.img_reconstructed > 1)] = 1;
         #self.img_reconstructed[np.where(self.img_reconstructed < 0)] = 0;
+        self.img_reconstructed = np.clip(self.img_reconstructed, a_min = 0,a_max = 1);
         
         plt.figure();
         plt.imshow(self.img_reconstructed);
+        plt.show();
         
         
         
@@ -370,7 +372,7 @@ class Compressed_sensing_PMT:
         
 a = Compressed_sensing_PMT();
 a.Load_img("ECE.jpg",RGB = True, size = (100,100));        
-measure = a.PMT_measure_simu(1,2000, Poisson = True);        
+measure = a.PMT_measure_simu(1000,2000, Poisson = True);        
 a.PMT_reconstruct(100,100,measure);        
         
         
